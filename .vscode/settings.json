@@ -1,4 +1,10 @@
 {
+    "dart.previewFlutterUiGuides": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true,
+        "source.organizeImports": true,
+        "source.sortMembers": true
+    },
     "[dart]": {
         "editor.formatOnSave": true,
         "editor.formatOnType": true,

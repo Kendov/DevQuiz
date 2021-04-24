@@ -4,6 +4,12 @@ import 'package:devquiz/home/widgets/chart/chart_widget.dart';
 import 'package:flutter/material.dart';
 
 class ScoreCardWidget extends StatelessWidget {
+  final int progress;
+
+  const ScoreCardWidget({Key? key, required this.progress})
+      : assert(progress >= 0 && progress <= 100),
+        super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -25,7 +31,9 @@ class ScoreCardWidget extends StatelessWidget {
             children: [
               Expanded(
                 flex: 1,
-                child: ChartWidget(),
+                child: ChartWidget(
+                  progress: progress,
+                ),
               ),
               Expanded(
                 flex: 3,
