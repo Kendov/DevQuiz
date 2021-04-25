@@ -39,6 +39,24 @@
                         "title": "b"
                     }
                 ]
+            },
+            {
+                "title": "What flutter does?",
+                "answers": [
+                    {
+                        "title": "Developer kit for user interfaces"
+                    },
+                    {
+                        "title": "Allows the possibility of creating native compiled apps",
+                        "isRight": true
+                    },
+                    {
+                        "title": "I think is a Brazilian coffee branding"
+                    },
+                    {
+                        "title": "Allows the creation of desktop apps that are really impressive"
+                    }
+                ]
             }
         ]
     }

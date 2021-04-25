@@ -1,42 +1,50 @@
 import 'package:devquiz/challenge/widgets/answer/answer_widget.dart';
 import 'package:devquiz/core/app_text_styles.dart';
+import 'package:devquiz/shared/models/question_model.dart';
 import 'package:flutter/material.dart';
 
-class QuizWidget extends StatelessWidget {
-  final String title;
+class QuizWidget extends StatefulWidget {
+  final QuestionModel question;
+  final VoidCallback onChange;
 
-  const QuizWidget({Key? key, required this.title}) : super(key: key);
+  const QuizWidget({Key? key, required this.question, required this.onChange})
+      : super(key: key);
+
+  @override
+  _QuizWidgetState createState() => _QuizWidgetState();
+}
+
+class _QuizWidgetState extends State<QuizWidget> {
+  int? indexSelected;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        children: [
-          Text(
-            title,
-            style: AppTextStyles.heading,
-          ),
-          SizedBox(
-            height: 24,
-          ),
-          AnswerWidget(
-            title: "Developer kit for user interfaces",
-          ),
-          AnswerWidget(
-            isRight: true,
-            isSelected: true,
-            title: "Allows the possibility of creating native compiled apps",
-          ),
-          AnswerWidget(
-            title: "I think is a Brazilian coffee branding",
-          ),
-          AnswerWidget(
-            isRight: true,
-            title:
-                "Allows the creation of desktop apps that are really impressive",
-          ),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Text(
+              widget.question.title,
+              style: AppTextStyles.heading,
+            ),
+            SizedBox(
+              height: 24,
+            ),
+            for (var i = 0; i < widget.question.answers.length; i++)
+              AnswerWidget(
+                answer: widget.question.answers[i],
+                isSelected: indexSelected == i,
+                disabled: indexSelected != null,
+                onTap: () {
+                  indexSelected = i;
+                  setState(() {});
+                  Future.delayed(Duration(seconds: 1)).then(
+                    (value) => widget.onChange(),
+                  );
+                },
+              ),
+          ],
+        ),
       ),
     );
   }
