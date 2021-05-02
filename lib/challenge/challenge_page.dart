@@ -2,13 +2,16 @@ import 'package:devquiz/challenge/challenge_controller.dart';
 import 'package:devquiz/challenge/widgets/next_button/next_button_widget.dart';
 import 'package:devquiz/challenge/widgets/question_indicator/question_indicator_widget.dart';
 import 'package:devquiz/challenge/widgets/quiz/quiz_widget.dart';
+import 'package:devquiz/result/result_page.dart';
 import 'package:devquiz/shared/models/question_model.dart';
 import 'package:flutter/material.dart';
 
 class ChallengePage extends StatefulWidget {
   final List<QuestionModel> questions;
+  final String title;
 
-  const ChallengePage({Key? key, required this.questions}) : super(key: key);
+  const ChallengePage({Key? key, required this.questions, required this.title})
+      : super(key: key);
 
   @override
   _ChallengePageState createState() => _ChallengePageState();
@@ -17,6 +20,7 @@ class ChallengePage extends StatefulWidget {
 class _ChallengePageState extends State<ChallengePage> {
   final _controller = ChallengeController();
   final _pageController = PageController();
+  var _selected = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +55,7 @@ class _ChallengePageState extends State<ChallengePage> {
                 ),
                 child: QuizWidget(
                   question: e,
-                  onChange: _nextPage,
+                  onSelected: _onSelected,
                 ),
               ),
             )
@@ -65,7 +69,7 @@ class _ChallengePageState extends State<ChallengePage> {
             valueListenable: _controller.progressNotifier,
             builder: (context, value, _) => Row(
               children: [
-                if (value + 1 != widget.questions.length)
+                if (value + 1 != widget.questions.length && !_selected)
                   Expanded(
                     flex: 5,
                     child: NextButtonWidget.white(
@@ -81,7 +85,16 @@ class _ChallengePageState extends State<ChallengePage> {
                     child: NextButtonWidget.green(
                       label: "Confirm",
                       onTap: () {
-                        Navigator.pop(context);
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ResultPage(
+                              title: widget.title,
+                              lenght: widget.questions.length,
+                              result: _controller.rightAnswerCount,
+                            ),
+                          ),
+                        );
                       },
                     ),
                   ),
@@ -104,10 +117,21 @@ class _ChallengePageState extends State<ChallengePage> {
 
   void _nextPage() {
     if (_controller.currentPage + 1 < widget.questions.length) {
-      _pageController.nextPage(
-        duration: Duration(milliseconds: 500),
-        curve: Curves.ease,
-      );
+      final Duration duration = Duration(milliseconds: 500);
+
+      _pageController
+          .nextPage(
+            duration: duration,
+            curve: Curves.ease,
+          )
+          .then((value) => _selected = false);
     }
+  }
+
+  void _onSelected(bool value) {
+    if (value) {
+      _controller.rightAnswerCount++;
+    }
+    _nextPage();
   }
 }
